@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 stock = ctrl.Antecedent(np.arange(0, 100, 1), 'stock')
 umbral = ctrl.Antecedent(np.arange(0, 100, 1), 'umbral')
