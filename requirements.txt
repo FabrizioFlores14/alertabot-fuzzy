@@ -4,3 +4,4 @@ scikit-fuzzy
 scipy
 packaging
 networkx
+flask-cors
