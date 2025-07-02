@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: alertabot-fuzzy
+    env: python
+    buildCommand: ""
+    startCommand: "python evaluar_riesgo.py"
+    plan: free
+    autoDeploy: true
