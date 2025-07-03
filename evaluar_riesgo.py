@@ -104,6 +104,7 @@ def evaluar_lote():
 
         resultados.append({
             "producto": nombre,
+            "stock": stock_val,
             "riesgo": round(riesgo_valor, 2),
             "riesgo_cualitativo": riesgo_cualitativo
         })
