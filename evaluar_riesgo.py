@@ -30,7 +30,7 @@ riesgo['nulo'] = fuzz.sigmf(riesgo.universe, 0.1, -10)
 riesgo['bajo'] = fuzz.gaussmf(riesgo.universe, 0.2, 0.1)
 riesgo['medio'] = fuzz.gaussmf(riesgo.universe, 0.5, 0.1)
 riesgo['alto'] = fuzz.gaussmf(riesgo.universe, 0.75, 0.1)
-riesgo['extremo'] = fuzz.sigmf(riesgo.universe, 0.78, 12)
+riesgo['extremo'] = fuzz.sigmf(riesgo.universe, 0.85, 10)
 
 # Reglas difusas 
 regla1 = ctrl.Rule(stock['muy_bajo'] & umbral['critico'], riesgo['extremo'])
@@ -91,13 +91,16 @@ def evaluar_lote():
         sistema.compute()
         riesgo_valor = sistema.output['riesgo']
 
-        # Clasificación cualitativa
-        if riesgo_valor >= 0.7:
+       # Clasificación cualitativa mejorada
+        if riesgo_valor >= 0.85:
+            riesgo_cualitativo = "EXTREMO"
+        elif riesgo_valor >= 0.7:
             riesgo_cualitativo = "ALTO"
         elif riesgo_valor >= 0.4:
             riesgo_cualitativo = "MEDIO"
         else:
             riesgo_cualitativo = "BAJO"
+
 
         resultados.append({
             "producto": nombre,
