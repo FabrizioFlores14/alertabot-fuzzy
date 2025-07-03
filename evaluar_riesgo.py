@@ -82,7 +82,7 @@ def evaluar_lote():
     resultados = []
 
     for item in productos:
-        nombre = item.get('producto', 'sin_nombre')
+        nombre = item.get('producto') or item.get('Producto') or 'sin_nombre'
         stock_val = item.get('stock', 0)
         umbral_val = item.get('umbral', 0)
 
