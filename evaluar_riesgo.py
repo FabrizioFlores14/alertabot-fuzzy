@@ -30,7 +30,7 @@ riesgo['nulo'] = fuzz.sigmf(riesgo.universe, 0.1, -10)
 riesgo['bajo'] = fuzz.gaussmf(riesgo.universe, 0.2, 0.1)
 riesgo['medio'] = fuzz.gaussmf(riesgo.universe, 0.5, 0.1)
 riesgo['alto'] = fuzz.gaussmf(riesgo.universe, 0.75, 0.1)
-riesgo['extremo'] = fuzz.sigmf(riesgo.universe, 0.85, 10)
+riesgo['extremo'] = fuzz.sigmf(riesgo.universe, 0.78, 12)
 
 # Reglas difusas 
 regla1 = ctrl.Rule(stock['muy_bajo'] & umbral['critico'], riesgo['extremo'])
@@ -55,9 +55,25 @@ regla11 = ctrl.Rule(~stock['muy_alto'] & umbral['critico'], riesgo['alto'])
 # Regla de excepción (evitar falsos negativos)
 regla12 = ctrl.Rule(stock['muy_bajo'] & ~umbral['bajo'], riesgo['extremo'])
 
+# Reglas reforzadas (simulan ponderación)
+
+# Casos de bajo stock que podrían no activarse tan fuerte
+regla13 = ctrl.Rule(stock['muy_bajo'] & ~umbral['bajo'], riesgo['extremo'])
+regla14 = ctrl.Rule(stock['muy_bajo'] & umbral['medio'], riesgo['extremo'])
+regla15 = ctrl.Rule(stock['bajo'] & umbral['critico'], riesgo['extremo'])  # duplicada y elevada
+
+# Casos intermedios pero con tendencia a riesgo elevado
+regla16 = ctrl.Rule(stock['medio'] & umbral['critico'], riesgo['alto'])  # ya existe, pero se refuerza por ambigüedad
+regla17 = ctrl.Rule(stock['medio'] & ~umbral['bajo'], riesgo['alto'])
+
+# Regla redundante de validación final
+regla18 = ctrl.Rule((stock['muy_bajo'] | stock['bajo']) & (umbral['critico'] | umbral['medio']), riesgo['extremo'])
+
 
 # Sistema de control
-sistema_ctrl = ctrl.ControlSystem([regla1, regla2, regla3, regla4, regla5, regla6, regla7])
+sistema_ctrl = ctrl.ControlSystem([regla1, regla2, regla3, regla4, regla5, regla6, regla7, regla8, 
+    regla9, regla10, regla11, regla12, regla13, regla14, regla15, regla16, regla17, regla18
+])
 sistema = ctrl.ControlSystemSimulation(sistema_ctrl)
 
 @app.route('/evaluar', methods=['POST'])
